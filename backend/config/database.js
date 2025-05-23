@@ -18,6 +18,10 @@ const sequelize = new Sequelize(
             min: 0,
             acquire: 30000,
             idle: 10000
+        },
+        define: {
+            underscored: true, // Ensures Sequelize uses snake_case for auto-generated fields like foreign keys
+            timestamps: true // Model will have createdAt and updatedAt
         }
     }
 );
