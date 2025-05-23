@@ -1,0 +1,31 @@
+/* /heartmatch/frontend/common/css/global.css */
+
+/* Define any custom CSS variables or base styles here */
+:root {
+  --color-primary: #FF4B91; /* A shade of pink for branding */
+  --color-primary-dark: #E03A7F;
+  --color-secondary: #FF9BD2; /* A lighter pink */
+  --color-accent: #6A1B9A; /* A contrasting color, e.g., purple */
+  --color-background: #F8FAFC; /* Light background, Tailwind gray-50 or similar */
+  --color-text-default: #333;
+  --color-text-light: #666;
+}
+
+body {
+  font-family: 'Arial', sans-serif; /* Or your preferred font */
+  background-color: var(--color-background);
+  color: var(--color-text-default);
+  line-height: 1.6;
+}
+
+/* Include TailwindCSS directives */
+/* These will be processed by the Tailwind build tool */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Any custom utilities or components can be added after */
+/* Example: A custom button not covered by Tailwind defaults */
+.custom-btn-outline {
+    @apply border border-primary text-primary px-4 py-2 rounded-md hover:bg-primary hover:text-white transition;
+}

@@ -1,0 +1,63 @@
+<!-- /heartmatch/frontend/users/pages/components/virtualGiftModal.html -->
+<!--
+    This is an HTML component for a modal.
+    It should be included in the main HTML pages where sending gifts is possible
+    (e.g., browse.html, profile.html, chat.html).
+    It relies on store.js to control its visibility and populate its content.
+-->
+
+<div id="virtual-gift-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative transform transition-all modal-transition modal-enter">
+        <!-- Close button -->
+        <button id="virtual-gift-modal-close" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <h2 class="text-2xl font-semibold mb-6 text-center text-dark">Send a Virtual Gift</h2>
+
+        <!-- Target User Info (Optional - could be passed via JS or displayed here) -->
+        <div id="gift-target-user-info" class="text-center mb-4 hidden">
+             Sending to: <span class="font-semibold text-primary" id="gift-target-user-name">User Name</span>
+             <!-- Optional avatar: <img src="..." alt="Target Avatar" class="w-8 h-8 rounded-full inline-block ml-2"> -->
+        </div>
+
+        <!-- Message Area for Modal -->
+        <div id="gift-message" class="mt-4 p-3 rounded border text-center text-sm hidden mb-4"></div>
+
+        <!-- Gift List Area -->
+        <div id="virtual-gifts-list" class="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-60 overflow-y-auto custom-scrollbar">
+            <!-- Gift items will be injected here by JS -->
+             <!-- Example Gift Item -->
+             <!--
+             <div class="flex flex-col items-center p-3 border rounded-lg cursor-pointer hover:border-primary data-[gift-id]:'...' data-[gift-cost]:'...' data-[gift-name]:'...' data-[gift-image]:'...' ">
+                 <img src="../img/gift-flower.png" alt="Gift Name" class="w-12 h-12 object-contain mb-2">
+                 <p class="text-xs font-medium text-dark line-clamp-1">Gift Name</p>
+                 <p class="text-xs text-gray-600 flex items-center"><i class="fas fa-coins text-yellow-500 mr-1"></i> Cost Coins</p>
+             </div>
+            -->
+             <!-- Loading State -->
+             <div class="col-span-full text-center text-gray-500">Loading gifts...</div>
+        </div>
+
+         <!-- Selected Gift Info -->
+         <div id="selected-gift-info" class="mt-6 p-4 bg-gray-100 rounded-md hidden">
+             <h3 class="text-lg font-semibold text-dark mb-2">Selected Gift:</h3>
+             <div class="flex items-center">
+                 <img id="selected-gift-image" src="" alt="Selected Gift" class="w-10 h-10 object-contain mr-4">
+                 <div>
+                     <p id="selected-gift-name" class="font-medium text-dark">None</p>
+                     <p id="selected-gift-cost" class="text-gray-600 flex items-center"><i class="fas fa-coins text-yellow-500 mr-1"></i> 0 Coins</p>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Action Button -->
+         <div class="mt-6 text-center">
+            <button id="send-virtual-gift-button" class="btn-primary w-full" disabled>Send Gift (<span id="send-gift-cost-display">0</span> Coins)</button>
+             <!-- Display current coin balance near send button -->
+             <p class="text-sm text-gray-600 mt-2">Your balance: <span id="current-coin-balance-display">Loading...</span> Coins</p>
+         </div>
+
+
+    </div>
+</div>

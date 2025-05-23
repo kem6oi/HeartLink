@@ -1,0 +1,142 @@
+<!-- /heartmatch/frontend/users/pages/profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Heartlink</title>
+    <!-- Tailwind CSS CDN - For rapid development. Use a build process for production. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Inline Tailwind config for CDN usage
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF4B91',
+                        secondary: '#FF9BD2',
+                        accent: '#AA77FF', // Example accent color
+                        dark: '#333333',
+                        light: '#F5F5F5' // Should match the background color in global.css if using one
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Link to local CSS files (Will link to compiled output in production) -->
+    <!-- <link rel="stylesheet" href="../../dist/css/output.css"> -->
+    
+    <!-- Local JavaScript files -->
+    <!-- Using type="module" for ES Modules -->
+    <!-- Paths are relative to the HTML file -->
+    <script src="../js/utils.js" defer type="module"></script>
+    <script src="../js/session.js" defer type="module"></script>
+    <!-- profile.js will fetch and display the user's profile data -->
+    <script src="../js/profile.js" defer type="module"></script>
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center">
+                 <!-- Assuming you have a logo.svg in the users/img directory -->
+                <img src="../img/logo.svg" alt="Heartlink Logo" class="h-8">
+                <span class="ml-2 text-xl font-semibold text-primary">Heartlink</span>
+            </a>
+            
+            <!-- Navigation Links for Logged-in User (Same as index.html) -->
+            <div class="flex items-center space-x-6">
+                <a href="browse.html" class="text-gray-600 hover:text-primary font-medium">Browse</a>
+                <a href="chat.html" class="text-gray-600 hover:text-primary font-medium">Chat</a>
+                 <a href="who-liked-me.html" class="text-gray-600 hover:text-primary font-medium">Likes</a>
+                <a href="premium-store.html" class="text-gray-600 hover:text-primary font-medium">Premium</a>
+                <a href="coins.html" class="text-gray-600 hover:text-primary font-medium">Coins</a>
+                
+                <!-- Profile Dropdown/Link - Active state -->
+                <div class="relative">
+                     <a href="profile.html" class="flex items-center text-primary font-medium">
+                         <!-- Replace with actual user avatar -->
+                         <img src="../img/default-avatar.png" alt="User Avatar" class="h-8 w-8 rounded-full mr-2 object-cover">
+                         <span id="user-nav-name">User</span> <!-- Placeholder for user name -->
+                    </a>
+                </div>
+
+                <!-- Logout Button/Link -->
+                <button id="logout-button" class="text-gray-600 hover:text-primary font-medium focus:outline-none">
+                    Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 md:p-8">
+            
+            <!-- Profile Header -->
+            <div class="flex flex-col md:flex-row items-center md:items-start pb-6 border-b border-gray-200">
+                <div class="md:mr-8 mb-6 md:mb-0">
+                    <!-- Placeholder for profile picture -->
+                    <img id="profile-avatar" src="../img/default-avatar-lg.png" alt="Profile Picture" class="w-32 h-32 rounded-full object-cover border-4 border-primary">
+                </div>
+                <div class="flex-grow text-center md:text-left">
+                    <div class="flex justify-center md:justify-start items-center mb-2">
+                        <h1 id="profile-name" class="text-3xl font-bold text-dark mr-3">Loading...</h1> <!-- Placeholder for name -->
+                        <span id="profile-age" class="text-xl text-gray-600"></span> <!-- Placeholder for age -->
+                    </div>
+                     <p id="profile-location" class="text-gray-600 mb-4"><i class="fas fa-map-marker-alt mr-1"></i> Loading Location...</p> <!-- Placeholder for location -->
+                    
+                    <!-- Edit Profile Button -->
+                    <a href="edit-profile.html" class="inline-block bg-primary text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition">
+                        <i class="fas fa-edit mr-2"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Sections -->
+            <div class="mt-6 space-y-6">
+                <!-- About Me Section -->
+                <div>
+                    <h2 class="text-xl font-semibold text-dark mb-3">About Me</h2>
+                    <p id="profile-bio" class="text-gray-700 leading-relaxed">Loading bio...</p> <!-- Placeholder for bio -->
+                </div>
+
+                <!-- Interests Section -->
+                <div>
+                    <h2 class="text-xl font-semibold text-dark mb-3">Interests</h2>
+                    <div id="profile-interests" class="flex flex-wrap gap-2">
+                         <!-- Placeholder for interests -->
+                         <span class="bg-light text-gray-700 px-3 py-1 rounded-full text-sm">Loading Interests...</span>
+                    </div>
+                </div>
+
+                <!-- Photos Section -->
+                <div>
+                    <h2 class="text-xl font-semibold text-dark mb-3">Photos</h2>
+                    <div id="profile-photos" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Placeholder for photos -->
+                         <div class="bg-gray-200 aspect-square rounded-md flex items-center justify-center text-gray-500">Loading Photo...</div>
+                    </div>
+                </div>
+
+                <!-- Add more sections as needed (e.g., Occupation, Education, etc.) -->
+
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-white py-6 mt-auto"> <!-- mt-auto pushes footer to bottom -->
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© 2023 Heartlink. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="#" class="text-gray-500 hover:text-gray-800 mx-2">Terms</a>
+                <a href="#" class="text-gray-500 hover:text-gray-800 mx-2">Privacy</a>
+                <a href="#" class="text-gray-800 hover:text-gray-800 mx-2">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!-- /heartmatch/frontend/admin/pages/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | HeartMatch Admin</title>
+    <!-- Tailwind CSS CDN - For rapid development. Use a build process for production. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Inline Tailwind config for CDN usage
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Define admin specific colors if different from user colors
+                        // Using the primary color from common/global.css or user theme
+                        primary: '#FF4B91', // HeartMatch branding pink
+                        secondary: '#FF9BD2', // Lighter pink
+                        accent: '#6A1B9A', // A different accent color for admin? Or reuse user accent?
+                        dark: '#1F2937', // Tailwind gray-800/900 typical dark
+                        light: '#F3F4F6', // Tailwind gray-100 typical light background for admin interfaces
+                        // Add admin specific colors if needed, e.g.,
+                        // 'admin-primary': '#3B82F6', // A blue for admin actions?
+                        // 'admin-light': '#EFF6FF',  // Light blue background
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link to Admin specific CSS (Will link to compiled output in production) -->
+    <!-- This file will contain the styles you provided earlier -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Link to Common Global CSS (Optional, depending on build process) -->
+     <!-- <link rel="stylesheet" href="../../common/css/global.css"> -->
+
+    <!-- Local JavaScript files -->
+    <!-- Using type="module" for ES Modules -->
+    <!-- Paths are relative to the HTML file -->
+    <script src="../../common/js/apiService.js" defer type="module"></script> <!-- API service is common -->
+    <script src="../js/utils.js" defer type="module"></script>     <!-- Admin specific utilities -->
+    <script src="../js/auth.js" defer type="module"></script>      <!-- Admin auth logic -->
+
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-center">
+            <a href="login.html" class="flex items-center">
+                 <!-- Assuming you have an admin logo or reuse the main one -->
+                <img src="../img/logo-admin.svg" alt="HeartMatch Admin Logo" class="h-8 mr-2">
+                <span class="text-xl font-semibold text-primary">HeartMatch Admin</span>
+            </a>
+        </nav>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center py-10 px-4">
+        <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
+            <h1 class="text-2xl font-bold mb-6 text-center text-dark">Admin Log In</h1>
+
+            <!-- Optional: Area for displaying login error/success messages -->
+            <!-- <div id="auth-message" class="mt-4 p-3 rounded border text-center text-sm hidden"></div> -->
+
+            <form id="admin-login-form" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <!-- Using the custom input-field class -->
+                    <input type="email" id="email" name="email" required
+                        class="input-field"> <!-- @apply is defined in admin/css/style.css -->
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                     <!-- Using the custom input-field class -->
+                    <input type="password" id="password" name="password" required
+                        class="input-field"> <!-- @apply is defined in admin/css/style.css -->
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="remember-me" name="remember-me"
+                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <a href="#" class="text-sm font-medium text-primary hover:text-opacity-80">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <div>
+                     <!-- Using the custom btn-primary class -->
+                    <button type="submit" id="login-button"
+                        class="btn-primary w-full flex justify-center"> <!-- @apply is defined in admin/css/style.css -->
+                        Log In
+                    </button>
+                </div>
+            </form>
+
+             <!-- Note: Social login is unlikely for an admin portal -->
+
+        </div>
+    </main>
+
+    <footer class="bg-white py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© 2023 HeartMatch Admin. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- For demo purposes: admin login credentials hint -->
+    <div class="fixed bottom-4 left-4 bg-yellow-100 p-3 rounded shadow-md text-xs text-yellow-800 z-50">
+        <p class="font-semibold">Demo Admin Login:</p>
+        <p>Email: admin@example.com</p>
+        <p>Password: Admin1234</p>
+    </div>
+
+</body>
+</html>

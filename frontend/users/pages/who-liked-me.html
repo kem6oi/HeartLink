@@ -1,0 +1,271 @@
+<!-- /heartmatch/frontend/users/pages/who-liked-me.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who Liked You | Heartlink</title>
+    <!-- Tailwind CSS CDN - For rapid development. Use a build process for production. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF4B91',
+                        secondary: '#FF9BD2',
+                        accent: '#AA77FF', // Example accent color
+                        dark: '#333333',
+                        light: '#F5F5F5' // Should match the background color in global.css if using one
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link to local CSS files (Will link to compiled output in production) -->
+    <!-- <link rel="stylesheet" href="../../dist/css/output.css"> -->
+    <!-- You might have user-specific styles here -->
+    <!-- <link rel="stylesheet" href="../css/style.css"> -->
+
+     <!-- Add custom scrollbar if not in global/output -->
+     <style>
+        /* Apply custom scrollbar styles from admin CSS if needed, or define here */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #FF9BD2; /* secondary color */
+        }
+         /* Basic modal transition styles if not using Tailwind CSS */
+         .modal-transition {
+           transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .modal-enter {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        .modal-visible {
+          opacity: 1;
+          transform: scale(1);
+        }
+     </style>
+
+
+    <!-- Local JavaScript files -->
+    <!-- Using type="module" for ES Modules -->
+    <!-- Paths are relative to the HTML file -->
+    <script src="../js/utils.js" defer type="module"></script>
+    <script src="../js/session.js" defer type="module"></script>
+    <script src="../js/who-liked-me.js" defer type="module"></script>
+    <script src="../js/premiumFeatures.js" defer type="module"></script> <!-- Needed for coin balance/sendGift & boost modal init -->
+    <script src="../js/store.js" defer type="module"></script>         <!-- Needed for gift modal logic -->
+
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center">
+                 <!-- Assuming you have a logo.svg in the users/img directory -->
+                <img src="../img/logo.svg" alt="Heartlink Logo" class="h-8">
+                <span class="ml-2 text-xl font-semibold text-primary">Heartlink</span>
+            </a>
+
+            <!-- Navigation Links for Logged-in User (Same as index.html) -->
+            <div class="flex items-center space-x-6">
+                <a href="browse.html" class="text-gray-600 hover:text-primary font-medium">Browse</a>
+                <a href="chat.html" class="text-gray-600 hover:text-primary font-medium">Chat</a>
+                 <!-- Likes link is active -->
+                 <a href="who-liked-me.html" class="text-primary font-medium">Likes</a>
+                <a href="premium-store.html" class="text-gray-600 hover:text-primary font-medium">Premium</a>
+                <a href="coins.html" class="text-gray-600 hover:text-primary font-medium">Coins</a>
+
+                <!-- Profile Dropdown/Link -->
+                <div class="relative">
+                     <a href="profile.html" class="flex items-center text-gray-600 hover:text-primary font-medium">
+                         <!-- Replace with actual user avatar -->
+                         <img id="user-nav-avatar-likes" src="../img/default-avatar.png" alt="User Avatar" class="h-8 w-8 rounded-full mr-2 object-cover">
+                         <span id="user-nav-name-likes">User</span> <!-- Placeholder for user name -->
+                    </a>
+                </div>
+
+                <!-- Logout Button/Link -->
+                <button id="logout-button-likes" class="text-gray-600 hover:text-primary font-medium focus:outline-none">
+                    Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-dark mb-6 text-center md:text-left">People Who Liked You</h1>
+
+        <!-- Message Area (for loading, errors, no users) -->
+        <div id="likes-message" class="mt-4 p-3 rounded border text-center text-sm hidden max-w-md mx-auto mb-6"></div>
+
+        <!-- List of Users Who Liked You -->
+        <!-- This container will be populated by whoLikedMe.js -->
+        <div id="liked-me-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+             <!-- Loading Placeholder -->
+             <div class="col-span-full text-center text-gray-500">Loading likes...</div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white py-6 mt-auto"> <!-- mt-auto pushes footer to bottom -->
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© 2023 Heartlink. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="#" class="text-gray-500 hover:text-gray-800 mx-2">Terms</a>
+                <a href="#" class="text-gray-500 hover:text-gray-800 mx-2">Privacy</a>
+                <a href="#" class="text-gray-800 hover:text-gray-800 mx-2">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Profile View Modal Placeholder -->
+    <!-- This modal will be hidden by default and shown when a user clicks 'View Profile' -->
+    <div id="profile-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 relative transform transition-all modal-transition modal-enter">
+            <!-- Close button -->
+            <button id="profile-modal-close" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Modal Content - Will be populated by JS -->
+            <div id="profile-modal-content">
+                 <!-- Loading state -->
+                 <div class="text-center text-gray-500">Loading profile details...</div>
+                 <!-- Actual profile details will be injected here -->
+            </div>
+
+             <!-- Add Send Gift Button within the Profile Modal -->
+             <div class="mt-6 text-center border-t border-gray-200 pt-4">
+                 <!-- Data attribute will be set by JS when modal is populated -->
+                 <button id="send-gift-from-profile-modal" class="btn-primary inline-block" data-target-user-id="" style="display: none;">
+                    <i class="fas fa-gift mr-2"></i> Send Gift
+                 </button>
+             </div>
+        </div>
+    </div>
+
+    <!-- Include Virtual Gift Modal HTML Component -->
+    <!-- Copy the content from /frontend/users/pages/components/virtualGiftModal.html here -->
+     <div id="virtual-gift-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative transform transition-all modal-transition modal-enter">
+            <!-- Close button -->
+            <button id="virtual-gift-modal-close" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h2 class="text-2xl font-semibold mb-6 text-center text-dark">Send a Virtual Gift</h2>
+
+            <!-- Target User Info (Optional - could be passed via JS or displayed here) -->
+            <div id="gift-target-user-info" class="text-center mb-4 hidden">
+                 Sending to: <span class="font-semibold text-primary" id="gift-target-user-name">User Name</span>
+                 <!-- Optional avatar: <img src="..." alt="Target Avatar" class="w-8 h-8 rounded-full inline-block ml-2"> -->
+            </div>
+
+            <!-- Message Area for Modal -->
+            <div id="gift-message" class="mt-4 p-3 rounded border text-center text-sm hidden mb-4"></div>
+
+            <!-- Gift List Area -->
+            <div id="virtual-gifts-list" class="grid grid-cols-2 sm:grid-cols-3 gap-4 max-h-60 overflow-y-auto custom-scrollbar">
+                <!-- Gift items will be injected here by JS -->
+                 <div class="col-span-full text-center text-gray-500">Loading gifts...</div>
+            </div>
+
+             <!-- Selected Gift Info -->
+             <div id="selected-gift-info" class="mt-6 p-4 bg-gray-100 rounded-md hidden">
+                 <h3 class="text-lg font-semibold text-dark mb-2">Selected Gift:</h3>
+                 <div class="flex items-center">
+                     <img id="selected-gift-image" src="" alt="Selected Gift" class="w-10 h-10 object-contain mr-4">
+                     <div>
+                         <p id="selected-gift-name" class="font-medium text-dark">None</p>
+                         <p id="selected-gift-cost" class="text-gray-600 flex items-center"><i class="fas fa-coins text-yellow-500 mr-1"></i> 0 Coins</p>
+                     </div>
+                 </div>
+             </div>
+
+             <!-- Action Button -->
+             <div class="mt-6 text-center">
+                <button id="send-virtual-gift-button" class="btn-primary w-full" disabled>Send Gift (<span id="send-gift-cost-display">0</span> Coins)</button>
+                 <!-- Display current coin balance near send button -->
+                 <p class="text-sm text-gray-600 mt-2">Your balance: <span id="current-coin-balance-display">Loading...</span> Coins</p>
+             </div>
+
+             <!-- Link to Buy Coins -->
+             <div class="text-center mt-2">
+                 <a href="coins.html" class="text-primary hover:underline text-sm">Need more coins? Buy now!</a>
+             </div>
+
+
+        </div>
+    </div>
+
+    <!-- Include Profile Boost Modal HTML Component -->
+    <!-- Copy the content from /frontend/users/pages/components/profileBoostModal.html here -->
+    <div id="profile-boost-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm max-h-[90vh] overflow-y-auto p-6 relative transform transition-all modal-transition modal-enter">
+            <!-- Close button -->
+            <button id="profile-boost-modal-close" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <h2 class="text-2xl font-semibold mb-4 text-center text-dark">Boost Your Profile!</h2>
+
+            <p class="text-gray-700 text-center mb-6">Get more visibility and reach more people near you.</p>
+
+             <!-- Message Area for Modal -->
+            <div id="boost-message" class="mt-4 p-3 rounded border text-center text-sm hidden mb-4"></div>
+
+            <!-- Boost Cost Info -->
+             <div class="bg-gray-100 rounded-md p-4 mb-6 text-center">
+                 <p class="text-lg font-semibold text-dark">Cost:</p>
+                 <p id="boost-cost-display" class="text-primary text-3xl font-bold flex items-center justify-center">
+                     <i class="fas fa-coins text-yellow-500 mr-2"></i> <span id="boost-cost-value">Loading...</span> Coins
+                 </p>
+                  <p class="text-sm text-gray-600 mt-2">Your balance: <span id="current-coin-balance-boost-display">Loading...</span> Coins</p>
+             </div>
+
+             <!-- Benefit Info (Optional) -->
+             <div class="mb-6">
+                  <h3 class="text-lg font-semibold text-dark mb-2">What a Boost Does:</h3>
+                  <ul class="text-gray-700 text-sm space-y-1">
+                     <li><i class="fas fa-arrow-up text-green-600 mr-2"></i> Your profile is shown more often.</li>
+                     <li><i class="fas fa-users text-green-600 mr-2"></i> Reach more potential matches.</li>
+                     <li><i class="fas fa-clock text-green-600 mr-2"></i> Lasts for a set duration (e.g., 1 hour).</li>
+                  </ul>
+             </div>
+
+
+            <!-- Action Button -->
+            <div class="mt-6 text-center">
+                <button id="confirm-boost-button" class="btn-primary w-full" disabled>
+                    <i class="fas fa-rocket mr-2"></i> Boost Profile
+                </button>
+            </div>
+
+             <!-- Link to Buy Coins -->
+             <div class="text-center mt-4">
+                 <a href="coins.html" class="text-primary hover:underline text-sm">Need more coins? Buy now!</a>
+             </div>
+
+
+        </div>
+    </div>
+
+
+</body>
+</html>

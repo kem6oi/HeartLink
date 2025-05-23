@@ -1,0 +1,188 @@
+<!-- /heartmatch/frontend/users/pages/chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat | Heartlink</title>
+    <!-- Tailwind CSS CDN - For rapid development. Use a build process for production. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Inline Tailwind config for CDN usage
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF4B91',
+                        secondary: '#FF9BD2',
+                        accent: '#AA77FF', // Example accent color
+                        dark: '#333333',
+                        light: '#F5F5F5' // Should match the background color in global.css if using one
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link to local CSS files (Will link to compiled output in production) -->
+    <!-- <link rel="stylesheet" href="../../dist/css/output.css"> -->
+    <!-- You might have user-specific styles here -->
+    <!-- <link rel="stylesheet" href="../css/style.css"> -->
+    <!-- Add custom scrollbar if not in global/output -->
+     <style>
+        /* Apply custom scrollbar styles from admin CSS if needed, or define here */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #FF9BD2; /* secondary color */
+        }
+     </style>
+
+
+    <!-- Local JavaScript files -->
+    <!-- Using type="module" for ES Modules -->
+    <!-- Paths are relative to the HTML file -->
+    <script src="../js/utils.js" defer type="module"></script>
+    <script src="../js/session.js" defer type="module"></script>
+    <script src="../js/chatSocket.js" defer type="module"></script> <!-- WebSocket handler -->
+    <script src="../js/chat.js" defer type="module"></script>     <!-- Main chat logic -->
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center">
+                 <!-- Assuming you have a logo.svg in the users/img directory -->
+                <img src="../img/logo.svg" alt="Heartlink Logo" class="h-8">
+                <span class="ml-2 text-xl font-semibold text-primary">Heartlink</span>
+            </a>
+
+            <!-- Navigation Links for Logged-in User (Same as index.html) -->
+            <div class="flex items-center space-x-6">
+                <a href="browse.html" class="text-gray-600 hover:text-primary font-medium">Browse</a>
+                 <!-- Chat link is active -->
+                <a href="chat.html" class="text-primary font-medium">Chat</a>
+                 <a href="who-liked-me.html" class="text-gray-600 hover:text-primary font-medium">Likes</a>
+                <a href="premium-store.html" class="text-gray-600 hover:text-primary font-medium">Premium</a>
+                <a href="coins.html" class="text-gray-600 hover:text-primary font-medium">Coins</a>
+
+                <!-- Profile Dropdown/Link -->
+                <div class="relative">
+                     <a href="profile.html" class="flex items-center text-gray-600 hover:text-primary font-medium">
+                         <!-- Replace with actual user avatar -->
+                         <img id="user-nav-avatar-chat" src="../img/default-avatar.png" alt="User Avatar" class="h-8 w-8 rounded-full mr-2 object-cover">
+                         <span id="user-nav-name-chat">User</span> <!-- Placeholder for user name -->
+                    </a>
+                </div>
+
+                <!-- Logout Button/Link -->
+                <button id="logout-button-chat" class="text-gray-600 hover:text-primary font-medium focus:outline-none">
+                    Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 h-[calc(100vh-headerH-footerH-paddingY)]"> <!-- Adjusted height -->
+        <div class="flex h-full bg-white rounded-lg shadow-md overflow-hidden">
+
+            <!-- Conversation List (Sidebar) -->
+            <aside class="w-full md:w-80 border-r border-gray-200 flex flex-col flex-shrink-0">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-dark">Messages</h2>
+                </div>
+                <!-- List of Conversations -->
+                <div id="conversation-list" class="flex-grow overflow-y-auto custom-scrollbar">
+                    <!-- Conversation items will be injected here by JS -->
+                    <!-- Example Conversation Item -->
+                    <!--
+                     <div class="flex items-center p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 data-[conversation-id]:'...' data-[match-id]:'...'">
+                         <img src="../img/default-avatar.png" alt="Match Avatar" class="w-10 h-10 rounded-full object-cover mr-3">
+                         <div class="flex-grow">
+                             <h3 class="text-sm font-medium text-dark line-clamp-1">Match Name</h3>
+                             <p class="text-xs text-gray-500 line-clamp-1">Last message snippet...</p>
+                         </div>
+                         <span class="text-xs text-gray-400 ml-2">Time</span>
+                     </div>
+                    -->
+                     <!-- Loading state -->
+                    <div class="p-4 text-center text-gray-500">Loading conversations...</div>
+                </div>
+            </aside>
+
+            <!-- Chat Window -->
+            <section id="chat-window" class="flex flex-col flex-grow">
+                <!-- Chat Header -->
+                <div class="w-full bg-gray-100 p-4 border-b border-gray-200 flex items-center">
+                    <img id="chat-header-avatar" src="../img/default-avatar.png" alt="Match Avatar" class="w-10 h-10 rounded-full object-cover mr-3">
+                    <h2 id="chat-header-name" class="text-lg font-semibold text-dark flex-grow">Select a Conversation</h2>
+                    <!-- Optional: Match actions button -->
+                    <!-- <button class="text-gray-500 hover:text-primary"><i class="fas fa-ellipsis-v"></i></button> -->
+                </div>
+
+                <!-- Message List Area -->
+                <div id="message-list" class="flex-grow overflow-y-auto custom-scrollbar p-4 space-y-4">
+                    <!-- Messages will be injected here by JS -->
+                    <!-- Example Sender Message -->
+                    <!--
+                     <div class="flex justify-end">
+                         <div class="bg-primary text-white rounded-lg p-3 max-w-xs">
+                             <p class="text-sm">This is a message from you.</p>
+                         </div>
+                     </div>
+                     -->
+                     <!-- Example Receiver Message -->
+                     <!--
+                     <div class="flex justify-start">
+                         <img src="../img/default-avatar.png" alt="Sender Avatar" class="w-8 h-8 rounded-full object-cover mr-3">
+                         <div class="bg-gray-200 text-dark rounded-lg p-3 max-w-xs">
+                             <p class="text-sm">This is a message from your match.</p>
+                         </div>
+                     </div>
+                    -->
+                    <!-- Placeholder state -->
+                     <div id="chat-placeholder" class="h-full flex items-center justify-center text-gray-500">
+                        Select a conversation to start chatting.
+                     </div>
+
+                </div>
+
+                <!-- Message Input Area -->
+                <div id="message-input-area" class="w-full p-4 border-t border-gray-200 bg-gray-100" style="display: none;"> <!-- Initially hidden -->
+                    <form id="message-form" class="flex items-center space-x-3">
+                        <input type="text" id="message-input" name="message" placeholder="Type a message..." required autocomplete="off"
+                            class="flex-grow px-4 py-2 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-primary focus:border-primary">
+                        <button type="submit" id="send-button" class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="bg-white py-6 mt-auto"> <!-- mt-auto pushes footer to bottom -->
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© 2023 Heartlink. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="#" class="text-gray-500 hover:text-gray-800 mx-2">Terms</a>
+                <a href="#" class="text-gray-500 hover:text-gray-800 mx-2">Privacy</a>
+                <a href="#" class="text-gray-800 hover:text-gray-800 mx-2">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

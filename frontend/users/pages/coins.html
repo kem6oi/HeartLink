@@ -1,0 +1,133 @@
+<!-- /heartmatch/frontend/users/pages/coins.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Coins | Heartlink</title>
+    <!-- Tailwind CSS CDN - For rapid development. Use a build process for production. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Inline Tailwind config for CDN usage
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF4B91',
+                        secondary: '#FF9BD2',
+                        accent: '#AA77FF', // Example accent color
+                        dark: '#333333',
+                        light: '#F5F5F5' // Should match the background color in global.css if using one
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link to local CSS files (Will link to compiled output in production) -->
+    <!-- <link rel="stylesheet" href="../../dist/css/output.css"> -->
+    <!-- You might have user-specific styles here -->
+    <!-- <link rel="stylesheet" href="../css/style.css"> -->
+
+    <!-- Local JavaScript files -->
+    <!-- Using type="module" for ES Modules -->
+    <!-- Paths are relative to the HTML file -->
+    <script src="../js/utils.js" defer type="module"></script>
+    <script src="../js/session.js" defer type="module"></script>
+     <!-- coins.js handles fetching balance, packages, and purchasing -->
+    <script src="../js/coins.js" defer type="module"></script>
+     <!-- premiumFeatures.js might be used for coin-based features like boost -->
+    <script src="../js/premiumFeatures.js" defer type="module"></script>
+     <!-- mockCoinPackages.js for frontend testing -->
+    <script src="../js/data/mockCoinPackages.js" defer type="module"></script>
+</head>
+<body class="bg-light min-h-screen flex flex-col">
+    <header class="bg-white shadow-sm">
+        <nav class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center">
+                 <!-- Assuming you have a logo.svg in the users/img directory -->
+                <img src="../img/logo.svg" alt="Heartlink Logo" class="h-8">
+                <span class="ml-2 text-xl font-semibold text-primary">Heartlink</span>
+            </a>
+
+            <!-- Navigation Links for Logged-in User -->
+            <div class="flex items-center space-x-6">
+                <a href="browse.html" class="text-gray-600 hover:text-primary font-medium">Browse</a>
+                <a href="chat.html" class="text-gray-600 hover:text-primary font-medium">Chat</a>
+                 <a href="who-liked-me.html" class="text-gray-600 hover:text-primary font-medium">Likes</a>
+                <a href="premium-store.html" class="text-gray-600 hover:text-primary font-medium">Premium</a>
+                 <!-- Coins link is active -->
+                <a href="coins.html" class="text-primary font-medium">Coins</a>
+
+                <!-- Profile Dropdown/Link -->
+                <div class="relative">
+                     <a href="profile.html" class="flex items-center text-gray-600 hover:text-primary font-medium">
+                         <!-- Replace with actual user avatar -->
+                         <img id="user-nav-avatar-coins" src="../img/default-avatar.png" alt="User Avatar" class="h-8 w-8 rounded-full mr-2 object-cover">
+                         <span id="user-nav-name-coins">User</span> <!-- Placeholder for user name -->
+                    </a>
+                </div>
+
+                <!-- Logout Button/Link -->
+                <button id="logout-button-coins" class="text-gray-600 hover:text-primary font-medium focus:outline-none">
+                    Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-dark mb-8 text-center">Get More Coins</h1>
+
+            <!-- Current Coin Balance -->
+             <div class="bg-white rounded-lg shadow-md p-6 mb-8 text-center">
+                 <h2 class="text-xl font-semibold text-dark mb-2">Your Coin Balance</h2>
+                 <p id="coin-balance" class="text-primary text-5xl font-bold">Loading...</p> <!-- Placeholder -->
+                 <p class="text-gray-600 mt-2">Coins can be used for Boosts, Virtual Gifts, and more!</p>
+             </div>
+
+             <!-- Message Area -->
+            <div id="coins-message" class="mt-4 p-3 rounded border text-center text-sm hidden max-w-md mx-auto mb-8"></div>
+
+
+            <!-- Coin Packages -->
+            <div id="coin-packages-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Coin package cards will be injected here by JS -->
+                <!-- Example Coin Package Card -->
+                <!--
+                 <div class="bg-white rounded-lg shadow-md p-6 flex flex-col items-center text-center border-2 border-transparent hover:border-primary transition-colors duration-200">
+                     <i class="fas fa-coins text-primary text-4xl mb-3"></i>
+                     <h3 class="text-2xl font-bold text-dark mb-1">500 Coins</h3>
+                     <p class="text-xl text-gray-600 mb-4">$4.99</p>
+                     <button class="btn-primary w-full" data-package-id="package-500">Buy Now</button>
+                 </div>
+                -->
+                 <!-- Loading State -->
+                 <div class="col-span-full text-center text-gray-500">Loading coin packages...</div>
+            </div>
+
+             <!-- Link to Premium Store -->
+             <div class="text-center mt-12">
+                <p class="text-lg text-dark mb-4">Looking for recurring benefits?</p>
+                <a href="premium-store.html" class="btn-secondary inline-block">Explore Premium Subscriptions</a>
+             </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-white py-6 mt-auto"> <!-- mt-auto pushes footer to bottom -->
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© 2023 Heartlink. All rights reserved.</p>
+            <div class="mt-2">
+                <a href="#" class="text-gray-500 hover:text-gray-800 mx-2">Terms</a>
+                <a href="#" class="text-gray-500 hover:text-gray-800 mx-2">Privacy</a>
+                <a href="#" class="text-gray-800 hover:text-gray-800 mx-2">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

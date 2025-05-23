@@ -1,0 +1,143 @@
+/* /heartmatch/frontend/admin/css/style.css */
+
+/*
+This file contains custom styles for the admin portal.
+It uses Tailwind CSS utility classes and @apply directives.
+Requires a Tailwind build process to work correctly.
+*/
+
+/* Customized admin portal styles */
+
+/* Dashboard card transitions */
+.dashboard-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+}
+
+/* Chart container */
+.chart-container {
+  height: 300px;
+  position: relative;
+}
+
+/* Sidebar active state */
+.sidebar-item.active {
+  background-color: rgba(255, 75, 145, 0.1); /* Slightly lighter for active state if primary is pink */
+  border-left: 3px solid #FF4B91;
+  color: #FF4B91; /* Make text color primary */
+}
+
+/* User profile image */
+.user-profile-image {
+  object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.user-profile-image:hover {
+  transform: scale(1.05);
+}
+
+/* Pagination buttons */
+.pagination-button {
+  transition: all 0.2s;
+}
+
+.pagination-button:hover:not([disabled]) {
+  transform: translateY(-2px);
+}
+
+/* Animation for notification badge */
+@keyframes pulse {
+  0% { transform: scale(1) translate(50%, -50%); } /* Adjusted for top-right positioning */
+  50% { transform: scale(1.2) translate(50%, -50%); }
+  100% { transform: scale(1) translate(50%, -50%); }
+}
+
+.notification-badge {
+  animation: pulse 1.5s infinite;
+  transform-origin: center; /* Ensure scaling is from center of badge */
+}
+
+/* Custom scrollbar for tables and dropdowns */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #FF9BD2;
+}
+
+/* Table row hover effect */
+.table-row-hover:hover {
+  background-color: rgba(255, 75, 145, 0.05);
+}
+
+/* Smooth transitions for modal */
+.modal-transition {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Notification dropdown item */
+.notification-item {
+  transition: background-color 0.2s ease;
+}
+.notification-item:hover {
+  background-color: #f9fafb; /* Tailwind gray-50 */
+}
+
+.notification-item-unread {
+  background-color: #eff6ff; /* Tailwind blue-50 or a light primary shade */
+}
+
+.notification-item-critical .notification-icon { color: #EF4444; } /* red-500 */
+.notification-item-warning .notification-icon { color: #F59E0B; } /* amber-500 */
+.notification-item-info .notification-icon { color: #3B82F6; }    /* blue-500 */
+
+/* Input field base style */
+.input-field {
+    @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm;
+}
+
+/* Button styles */
+.btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition;
+}
+.btn-secondary {
+    @apply bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition;
+}
+
+/* Sidebar styling for current page */
+aside nav a.active-sidebar-link {
+    background-color: #FFF1F7; /* Light pink, primary related */
+    color: #FF4B91; /* Primary color */
+    font-weight: 600; /* Semibold */
+    border-left: 3px solid #FF4B91;
+}
+aside nav a:not(.active-sidebar-link):hover {
+    background-color: #F8FAFC; /* admin.light */
+}

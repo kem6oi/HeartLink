@@ -1,0 +1,203 @@
+<!-- /heartmatch/frontend/admin/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | HeartMatch Admin</title>
+    <!-- Tailwind CSS CDN - For rapid development. Use a build process for production. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Inline Tailwind config for CDN usage
+        tailwind.config = {
+            theme: {
+                extend: {
+                     colors: {
+                        // Define admin specific colors if different from user colors
+                        // Using the primary color from common/global.css or user theme
+                        primary: '#FF4B91', // HeartMatch branding pink
+                        secondary: '#FF9BD2', // Lighter pink
+                        accent: '#6A1B9A', // A different accent color for admin? Or reuse user accent?
+                        dark: '#1F2937', // Tailwind gray-800/900 typical dark
+                        light: '#F3F4F6', // Tailwind gray-100 typical light background for admin interfaces
+                        // Add admin specific colors if needed, e.g.,
+                        // 'admin-light': '#EFF6FF',  // Light blue background
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link to Admin specific CSS (Will link to compiled output in production) -->
+    <!-- This file will contain the styles you provided earlier, including @apply directives -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Link to Common Global CSS (Optional, depending on build process) -->
+     <!-- <link rel="stylesheet" href="../../common/css/global.css"> -->
+
+    <!-- Local JavaScript files -->
+    <!-- Using type="module" for ES Modules -->
+    <!-- Paths are relative to the HTML file -->
+    <script src="../../common/js/apiService.js" defer type="module"></script> <!-- API service is common -->
+    <script src="../js/utils.js" defer type="module"></script>     <!-- Admin specific utilities (re-exports common) -->
+    <script src="../js/adminSession.js" defer type="module"></script> <!-- Admin session management -->
+    <script src="../js/dashboard.js" defer type="module"></script>    <!-- Dashboard specific logic -->
+
+
+</head>
+<body class="bg-light min-h-screen flex"> <!-- Use flex to enable sidebar/main layout -->
+
+    <!-- Sidebar -->
+    <aside class="bg-gray-800 text-gray-400 w-64 flex flex-col h-screen sticky top-0">
+        <div class="p-4 border-b border-gray-700">
+            <a href="index.html" class="flex items-center text-white">
+                <img src="../img/logo-admin-white.svg" alt="HeartMatch Admin Logo" class="h-8 mr-2">
+                <span class="text-xl font-semibold">Admin Panel</span>
+            </a>
+        </div>
+        <nav class="flex-grow p-4 space-y-2">
+            <a href="dashboard.html" class="sidebar-item active-sidebar-link flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-chart-line mr-3"></i> Dashboard
+            </a>
+            <a href="users.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-users mr-3"></i> User Management
+            </a>
+             <a href="moderation.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-shield-alt mr-3"></i> Moderation
+            </a>
+             <a href="subscription-plans.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-crown mr-3"></i> Subscription Plans
+            </a>
+            <a href="coins.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-coins mr-3"></i> Coin Packages
+            </a>
+             <a href="virtual-gifts.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-gift mr-3"></i> Virtual Gifts
+            </a>
+             <a href="admins.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-user-cog mr-3"></i> Admin Users
+            </a>
+             <!-- Add Staff link here if needed -->
+             <!-- <a href="../staff/index.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-clipboard-user mr-3"></i> Staff Panel
+            </a> -->
+        </nav>
+        <div class="p-4 border-t border-gray-700">
+            <div class="flex items-center mb-4">
+                <img id="admin-avatar" src="../img/default-avatar-admin.png" alt="Admin Avatar" class="w-8 h-8 rounded-full mr-3 object-cover">
+                <span id="admin-name" class="text-sm font-semibold text-white flex-grow">Admin Name</span> <!-- Placeholder for admin name -->
+            </div>
+             <button id="admin-logout-button" class="w-full text-left text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-md transition-colors">
+                 <i class="fas fa-sign-out-alt mr-3"></i> Logout
+             </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow flex flex-col">
+        <header class="bg-white shadow-sm p-4 flex items-center justify-between sticky top-0 z-10">
+             <h1 class="text-2xl font-bold text-dark">Dashboard</h1>
+             <!-- Optional: Notifications or user profile icon -->
+             <!-- <div class="flex items-center space-x-4">
+                  <button class="text-gray-500 hover:text-dark"><i class="fas fa-bell"></i></button>
+             </div> -->
+        </header>
+
+        <main class="p-6 flex-grow">
+            <div class="space-y-6">
+                <!-- Overview Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="dashboard-card bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center">
+                            <div class="p-3 rounded-full bg-primary text-white mr-4">
+                                <i class="fas fa-users text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Total Users</p>
+                                <p id="total-users" class="text-2xl font-bold text-dark">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center">
+                             <div class="p-3 rounded-full bg-green-500 text-white mr-4">
+                                <i class="fas fa-dollar-sign text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Total Revenue (Est.)</p>
+                                <p id="total-revenue" class="text-2xl font-bold text-dark">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card bg-white rounded-lg shadow-md p-6">
+                         <div class="flex items-center">
+                             <div class="p-3 rounded-full bg-blue-500 text-white mr-4">
+                                <i class="fas fa-crown text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Active Subscriptions</p>
+                                <p id="active-subscriptions" class="text-2xl font-bold text-dark">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card bg-white rounded-lg shadow-md p-6">
+                         <div class="flex items-center">
+                             <div class="p-3 rounded-full bg-yellow-500 text-white mr-4">
+                                <i class="fas fa-heart mr-3"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">Matches Today</p>
+                                <p id="matches-today" class="text-2xl font-bold text-dark">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts or Recent Activity -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-lg font-semibold text-dark mb-4">User Growth (Last 30 Days)</h2>
+                        <div class="chart-container">
+                            <!-- Chart will be rendered here by JS (e.g., Chart.js) -->
+                            <canvas id="user-growth-chart"></canvas>
+                        </div>
+                    </div>
+                     <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-lg font-semibold text-dark mb-4">Recent Activity / Moderation Queue</h2>
+                        <!-- Placeholder for a list of recent events or pending moderation items -->
+                         <div class="text-gray-500">Loading recent activity...</div>
+                         <!-- Example list item: -->
+                         <!-- <div class="border-b border-gray-100 py-2 text-sm">User <span class="font-medium">Alice</span> registered.</div> -->
+                    </div>
+                </div>
+
+                <!-- Quick Links / Actions -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-lg font-semibold text-dark mb-4">Quick Links</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                         <a href="users.html" class="bg-light p-4 rounded-md text-center text-gray-700 hover:bg-gray-200 transition">
+                            <i class="fas fa-users text-2xl text-primary mb-2"></i>
+                            <p class="font-medium">Manage Users</p>
+                        </a>
+                         <a href="moderation.html" class="bg-light p-4 rounded-md text-center text-gray-700 hover:bg-gray-200 transition">
+                            <i class="fas fa-shield-alt text-2xl text-primary mb-2"></i>
+                            <p class="font-medium">Review Content</p>
+                        </a>
+                         <a href="subscription-plans.html" class="bg-light p-4 rounded-md text-center text-gray-700 hover:bg-gray-200 transition">
+                            <i class="fas fa-crown text-2xl text-primary mb-2"></i>
+                            <p class="font-medium">Manage Plans</p>
+                        </a>
+                         <a href="coins.html" class="bg-light p-4 rounded-md text-center text-gray-700 hover:bg-gray-200 transition">
+                            <i class="fas fa-coins text-2xl text-primary mb-2"></i>
+                            <p class="font-medium">Manage Coins</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

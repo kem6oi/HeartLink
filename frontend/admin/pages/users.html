@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | HeartMatch Admin</title>
+    <!-- Tailwind CSS CDN - For rapid development. Use a build process for production. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Inline Tailwind config for CDN usage
+        tailwind.config = {
+            theme: {
+                extend: {
+                     colors: {
+                        // Define admin specific colors if different from user colors
+                        primary: '#FF4B91', // HeartMatch branding pink
+                        secondary: '#FF9BD2', // Lighter pink
+                        accent: '#6A1B9A', // A different accent color for admin? Or reuse user accent?
+                        dark: '#1F2937', // Tailwind gray-800/900 typical dark
+                        light: '#F3F4F6', // Tailwind gray-100 typical light background for admin interfaces
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Link to Admin specific CSS (Will link to compiled output in production) -->
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- Local JavaScript files -->
+    <!-- Using type="module" for ES Modules -->
+    <script src="../../common/js/apiService.js" defer type="module"></script>
+    <script src="../js/utils.js" defer type="module"></script>
+    <script src="../js/adminSession.js" defer type="module"></script>
+    <script src="../js/userManagement.js" defer type="module"></script>
+
+</head>
+<body class="bg-light min-h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="bg-gray-800 text-gray-400 w-64 flex flex-col h-screen sticky top-0">
+        <div class="p-4 border-b border-gray-700">
+            <a href="index.html" class="flex items-center text-white">
+                <img src="../img/logo-admin-white.svg" alt="HeartMatch Admin Logo" class="h-8 mr-2">
+                <span class="text-xl font-semibold">Admin Panel</span>
+            </a>
+        </div>
+        <nav class="flex-grow p-4 space-y-2">
+            <a href="dashboard.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-chart-line mr-3"></i> Dashboard
+            </a>
+             <!-- Active link -->
+            <a href="users.html" class="sidebar-item active-sidebar-link flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-users mr-3"></i> User Management
+            </a>
+             <a href="moderation.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-shield-alt mr-3"></i> Moderation
+            </a>
+             <a href="subscription-plans.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-crown mr-3"></i> Subscription Plans
+            </a>
+            <a href="coins.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-coins mr-3"></i> Coin Packages
+            </a>
+             <a href="virtual-gifts.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-gift mr-3"></i> Virtual Gifts
+            </a>
+             <a href="admins.html" class="sidebar-item flex items-center p-2 rounded-md hover:bg-gray-700">
+                <i class="fas fa-user-cog mr-3"></i> Admin Users
+            </a>
+        </nav>
+        <div class="p-4 border-t border-gray-700">
+            <div class="flex items-center mb-4">
+                <img id="admin-avatar" src="../img/default-avatar-admin.png" alt="Admin Avatar" class="w-8 h-8 rounded-full mr-3 object-cover">
+                <span id="admin-name" class="text-sm font-semibold text-white flex-grow">Admin Name</span>
+            </div>
+             <button id="admin-logout-button" class="w-full text-left text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-md transition-colors">
+                 <i class="fas fa-sign-out-alt mr-3"></i> Logout
+             </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow flex flex-col">
+        <header class="bg-white shadow-sm p-4 flex items-center justify-between sticky top-0 z-10">
+             <h1 class="text-2xl font-bold text-dark">User Management</h1>
+             <!-- Optional: Search, Filter, Add User button -->
+             <div class="flex items-center space-x-4">
+                 <input type="text" id="user-search" placeholder="Search users..." class="input-field px-3 py-1 text-sm">
+                 <button id="add-user-button" class="btn-primary text-sm py-1 px-3">
+                     <i class="fas fa-plus mr-1"></i> Add User
+                 </button>
+             </div>
+        </header>
+
+        <main class="p-6 flex-grow">
+            <div class="bg-white rounded-lg shadow-md p-6">
+
+                <!-- Message Area -->
+                <div id="page-message" class="mb-6 p-3 rounded border text-center text-sm hidden"></div>
+
+                <!-- User Table -->
+                 <div class="overflow-x-auto custom-scrollbar">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    ID
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Name
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Registered
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- User rows will be injected here by JS -->
+                            <tr>
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                 </div>
+
+                 <!-- Pagination -->
+                 <div class="mt-4 flex justify-between items-center">
+                     <button id="prev-page-button" class="pagination-button btn-secondary px-3 py-1 text-sm" disabled>Previous</button>
+                     <span id="page-info" class="text-sm text-gray-600">Page 1 of 1</span>
+                     <button id="next-page-button" class="pagination-button btn-secondary px-3 py-1 text-sm" disabled>Next</button>
+                 </div>
+
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
